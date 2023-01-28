@@ -693,18 +693,40 @@ namespace ProjektSemStatki
             // ! - bool
             if (ObiektPrzeciwnika.CzyStatkiSaZniszczone && !MojObiekt.CzyStatkiSaZniszczone)
             {
-
-                List<Score> highScores = new List<Score>();
-
                 Console.WriteLine("Koniec gry, wygrałeś.");
                 Console.WriteLine("Twój wynik: {0} ", Gra);
+                string[] highScores = new string[10];
                 int currentScore = Gra;
                 Console.WriteLine("Podaj nick: ");
                 string playerName = Console.ReadLine();
+                if (!File.Exists("highscores.txt"))
+                {
+                    File.Create("highscores.txt");
+                }
+                try
+                {
+                    //load the high scores from file
+                    highScores = File.ReadAllLines("highscores.txt");
+                }
+                catch (IOException ex)
+                {
+                    Console.WriteLine("Błąd odczytu: " + ex.Message);
+                }
+                highScores[highScores.Length - 1] = playerName + ": " + currentScore;
+                try
+                {
+                    highScores = highScores.OrderByDescending(x => int.Parse(x.Split(':')[1])).ToArray();
+                }
+                catch (IndexOutOfRangeException ex)
+                {
+                    Console.WriteLine("Error parsing high scores: " + ex.Message);
+                }
 
-                
-
-
+                File.WriteAllLines("highscores.txt", highScores);
+                foreach (string score in highScores)
+                {
+                    Console.WriteLine(score);
+                }
             }
             else if (!ObiektPrzeciwnika.CzyStatkiSaZniszczone && MojObiekt.CzyStatkiSaZniszczone)
             {
