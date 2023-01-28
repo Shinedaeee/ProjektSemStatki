@@ -634,7 +634,7 @@ namespace ProjektSemStatki {
 
             string[] highScores = File.ReadAllLines("highscores.txt");
 
-            highScores = highScores.OrderByDescending(x => int.Parse(x.Split(':')[1])).ToArray();
+            highScores = highScores.OrderByDescending(x => int.Parse(x.Split(':')[1])).Reverse().ToArray();
 
             foreach (var item in highScores) {
                 Console.WriteLine(item);
