@@ -6,15 +6,12 @@ using System.IO;
 using System.Security.Cryptography;
 using GeneralTools;
 
-namespace ProjektSemStatki
-{
-    class Highscore
-    {
+namespace ProjektSemStatki {
+    class Highscore {
         public string Nickname { get; set; }
         public int Wynik { get; set; }
 
-        public Highscore(string Nickname, int Wynik)
-        {
+        public Highscore(string Nickname, int Wynik) {
             this.Nickname = Nickname;
             this.Wynik = Wynik;
         }
@@ -25,8 +22,7 @@ namespace ProjektSemStatki
         public int x { get; set; } = -1;
         public int y { get; set; } = -1;
     }
-    class Obiekt
-    {
+    class Obiekt {
         Random random = new Random();
         private const int PIATKA = 5;
         private const int CZWORKA = 4;
@@ -34,8 +30,7 @@ namespace ProjektSemStatki
         private const int DWOJKA = 2;
         private const int JEDYNKA = 1;
 
-        public Obiekt()
-        {
+        public Obiekt() {
 
             Piatka = Generuj(PIATKA, WszystkiePozycje);
             Czworka = Generuj(CZWORKA, WszystkiePozycje);
@@ -69,9 +64,8 @@ namespace ProjektSemStatki
         public bool CzyTrojkaZatopiona { get; set; } = false;
         public bool CzyDwojkaZatopiona { get; set; } = false;
         public bool CzyJedynkaZatopiona { get; set; } = false;
-        
-        public Obiekt SprawdzStan(List<Pozycja> PozycjeTrafione)
-        {
+
+        public Obiekt SprawdzStan(List<Pozycja> PozycjeTrafione) {
 
             CzyPiatkaZatopiona = Piatka.Where(C => !PozycjeTrafione.Any(H => C.x == H.x && C.y == H.y)).ToList().Count == 0;
             CzyCzworkaZatopiona = Czworka.Where(B => !PozycjeTrafione.Any(H => B.x == H.x && B.y == H.y)).ToList().Count == 0;
@@ -83,14 +77,12 @@ namespace ProjektSemStatki
             CzyStatkiSaZniszczone = CzyPiatkaZatopiona && CzyCzworkaZatopiona && CzyTrojkaZatopiona && CzyDwojkaZatopiona && CzyJedynkaZatopiona;
             return this;
         }
-        public List<Pozycja> Generuj(int size, List<Pozycja> WszystkiePozycje)
-        {
+        public List<Pozycja> Generuj(int size, List<Pozycja> WszystkiePozycje) {
             List<Pozycja> pozycje = new List<Pozycja>();
             // v sprawdza czy istnieje już coś na tym polu
             bool CzyIstnieje = false;
             // v pętla działa tak długo, jak na danym polu nie wygenerował się żaden obiekt
-            do
-            {
+            do {
                 pozycje = GenerowaniePozycji(size);
                 CzyIstnieje = pozycje.Where(AP => WszystkiePozycje.Exists(ShipPos => ShipPos.x == AP.x && ShipPos.y == AP.y)).Any();
             }
@@ -99,56 +91,42 @@ namespace ProjektSemStatki
             WszystkiePozycje.AddRange(pozycje);
             return pozycje;
         }
-        public List<Pozycja> GenerowaniePozycji(int size)
-        {
+        public List<Pozycja> GenerowaniePozycji(int size) {
             List<Pozycja> pozycje = new List<Pozycja>();
             //obraca pionowo i poziomo
             int obrot = random.Next(1, size);
             int row = random.Next(1, 11);
             int column = random.Next(1, 11);
             // v modulo, żeby pozostały dwie opcje
-            if (obrot % 2 != 0)
-            {
+            if (obrot % 2 != 0) {
                 //kolumny od góry do dołu
-                if (column - size > 0)
-                {
-                    for (int i = 0; i < size; i++)
-                    {
+                if (column - size > 0) {
+                    for (int i = 0; i < size; i++) {
                         Pozycja poz = new Pozycja();
                         poz.x = row;
                         poz.y = column - i;
                         pozycje.Add(poz);
                     }
-                }
-                else
-                {
-                    for (int i = 0; i < size; i++)
-                    {
+                } else {
+                    for (int i = 0; i < size; i++) {
                         Pozycja poz = new Pozycja();
                         poz.x = row;
                         poz.y = column + i;
                         pozycje.Add(poz);
                     }
                 }
-                
-            }
-            else
-            {
+
+            } else {
                 // v wiersz, od lewej do prawej
-                if (row - size > 0)
-                {
-                    for (int i = 0; i < size; i++)
-                    {
+                if (row - size > 0) {
+                    for (int i = 0; i < size; i++) {
                         Pozycja poz = new Pozycja();
                         poz.x = row - i;
                         poz.y = column;
                         pozycje.Add(poz);
                     }
-                }
-                else
-                {
-                    for (int i = 0; i < size; i++)
-                    {
+                } else {
+                    for (int i = 0; i < size; i++) {
                         Pozycja poz = new Pozycja();
                         poz.x = row + i;
                         poz.y = column;
@@ -159,14 +137,12 @@ namespace ProjektSemStatki
             return pozycje;
         }
 
-        public Obiekt Strzelaj()
-        {
+        public Obiekt Strzelaj() {
             //sprawdza czy dane pole zostało trafione
             bool JuzTrafiony = false;
             Pozycja PozycjaPrzeciwnika = new Pozycja();
             //pętla działa do momentu jak pole przeciwnika jest puste, analogicznie jak z naszym
-            do
-            {
+            do {
                 PozycjaPrzeciwnika.x = random.Next(1, 11);
                 PozycjaPrzeciwnika.y = random.Next(1, 11);
                 JuzTrafiony = Strzaly.Any(EFP => EFP.x == PozycjaPrzeciwnika.x && EFP.y == PozycjaPrzeciwnika.y);
@@ -176,141 +152,108 @@ namespace ProjektSemStatki
             return this;
         }
     }
-    class Program
-    {
-        
-        static void Menu()
-        {
-            Console.WriteLine("Zagrajmy w statki! :)");            
+    class Program {
+
+        static void Menu() {
+            Console.WriteLine("Zagrajmy w statki! :)");
             Console.WriteLine("1. Zagraj w grę :)");
             Console.WriteLine("2. Wpisz swój nick :) ");
             Console.WriteLine("0. Opuść rozgrywkę :( ");
             int wybor = Tools.WprowadzInt($"Wybierz opcję: ", -1, 3);
             bool CzyGrac = true;
-            while (CzyGrac)
-            {
-                switch (wybor)
-                {
-                    case 1:
-                        {
+            while (CzyGrac) {
+                switch (wybor) {
+                    case 1: {
                             ProgramGlowny();
                             break;
                         }
-                    case 2:
-                        {
+                    case 2: {
                             Nick();
                             break;
                         }
-                    case 0:
-                        {
+                    case 0: {
                             break;
                         }
                 }
             }
         }
-        
-        
-        static string Nick()
-        {
+
+
+        static string Nick() {
             Console.WriteLine("Tutaj wpisz swój nick :) :  ");
             string TwojNick = Console.ReadLine();
-            
+
             Menu();
             return TwojNick;
-            
+
         }
 
-        static void Statystyki(int x, int y, Obiekt obiekt)
-        {
+        static void Statystyki(int x, int y, Obiekt obiekt) {
             //pisze przydatne informacje dla gracza w wyznaczonym miejscu
             //pokazuje na bieżąco stan statków
             //które są okupowane, zatopione, bezpieczne
-            if (x == 1 && y == 10)
-            {
+            if (x == 1 && y == 10) {
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.Write("Statek:       ");
             }
-            if (x == 2 && y == 10)
-            {
-                if (obiekt.CzyPiatkaZatopiona)
-                {
+            if (x == 2 && y == 10) {
+                if (obiekt.CzyPiatkaZatopiona) {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.Write("Piatka [5]    ");
-                }
-                else
-                {
+                } else {
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write("Piatka [5]    ");
                 }
             }
-            if (x == 3 && y == 10)
-            {
-                if (obiekt.CzyCzworkaZatopiona)
-                {
+            if (x == 3 && y == 10) {
+                if (obiekt.CzyCzworkaZatopiona) {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.Write("Czworka [4]   ");
-                }
-                else
-                {
+                } else {
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write("Czworka [4]   ");
                 }
             }
-            if (x == 4 && y == 10)
-            {
+            if (x == 4 && y == 10) {
 
-                if (obiekt.CzyTrojkaZatopiona)
-                {
+                if (obiekt.CzyTrojkaZatopiona) {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.Write("Trojka [3]    ");
-                }
-                else
-                {
+                } else {
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write("Trojka [3]    ");
                 }
             }
-            if (x == 5 && y == 10)
-            {
+            if (x == 5 && y == 10) {
 
-                if (obiekt.CzyDwojkaZatopiona)
-                {
+                if (obiekt.CzyDwojkaZatopiona) {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.Write("Dwojka [2]    ");
-                }
-                else
-                {
+                } else {
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write("Dwojka [2]    ");
                 }
             }
-            if (x == 6 && y == 10)
-            {
+            if (x == 6 && y == 10) {
 
-                if (obiekt.CzyJedynkaZatopiona)
-                {
+                if (obiekt.CzyJedynkaZatopiona) {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.Write("Jedynka [1]   ");
-                }
-                else
-                {
+                } else {
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write("Jedynka [1]   ");
                 }
 
             }
             //puste pola
-            if (x > 6 && y == 10)
-            {
-                for (int i = 0; i < 14; i++)
-                {
+            if (x > 6 && y == 10) {
+                for (int i = 0; i < 14; i++) {
                     Console.Write(" ");
                 }
             }
         }
-        static void Mapa(List<Pozycja> pozycje, Obiekt MojObiekt, Obiekt ObiektPrzeciwnika, bool PokazStatkiPrzeciwnika)
-        {
-            
+        static void Mapa(List<Pozycja> pozycje, Obiekt MojObiekt, Obiekt ObiektPrzeciwnika, bool PokazStatkiPrzeciwnika) {
+
             Oznaczenia();
             Console.WriteLine();
             if (!PokazStatkiPrzeciwnika)
@@ -328,17 +271,13 @@ namespace ProjektSemStatki
             int IloscRuchowPrzeciwnika = 0;
             // v od jakiego momentu zaczynamy pole
             char row = 'A';
-            try
-            {
-                for (int x = 1; x < 11; x++)
-                {
-                    for (int y = 1; y < 11; y++)
-                    {
+            try {
+                for (int x = 1; x < 11; x++) {
+                    for (int y = 1; y < 11; y++) {
                         bool CzyKontynuowac = true;
 
 
-                        if (y == 1)
-                        {
+                        if (y == 1) {
                             Console.ForegroundColor = ConsoleColor.DarkMagenta;
                             Console.Write("[" + row + "]");
                             row++;
@@ -346,14 +285,12 @@ namespace ProjektSemStatki
 
 
 
-                        if (PozycjeOstrzelone.Count != 0 && PozycjeOstrzelone[IloscRuchow].x == x && PozycjeOstrzelone[IloscRuchow].y == y)
-                        {
+                        if (PozycjeOstrzelone.Count != 0 && PozycjeOstrzelone[IloscRuchow].x == x && PozycjeOstrzelone[IloscRuchow].y == y) {
 
                             if (PozycjeOstrzelone.Count - 1 > IloscRuchow)
                                 IloscRuchow++;
 
-                            if (ObiektPrzeciwnika.WszystkiePozycje.Exists(ShipPos => ShipPos.x == x && ShipPos.y == y))
-                            {
+                            if (ObiektPrzeciwnika.WszystkiePozycje.Exists(ShipPos => ShipPos.x == x && ShipPos.y == y)) {
 
                                 Console.ForegroundColor = ConsoleColor.Red;
                                 Console.Write("[*]");
@@ -362,9 +299,7 @@ namespace ProjektSemStatki
                                 CzyKontynuowac = false;
                                 //continue;
 
-                            }
-                            else
-                            {
+                            } else {
                                 Console.ForegroundColor = ConsoleColor.Black;
                                 Console.Write("[X]");
 
@@ -375,9 +310,7 @@ namespace ProjektSemStatki
 
                         }
 
-                        if (CzyKontynuowac && PokazStatkiPrzeciwnika && PozycjeStatkow.Count != 0 && PozycjeStatkow[IloscStatkowPrzeciwnika].x == x && PozycjeStatkow[IloscStatkowPrzeciwnika].y == y)
-
-                        {
+                        if (CzyKontynuowac && PokazStatkiPrzeciwnika && PozycjeStatkow.Count != 0 && PozycjeStatkow[IloscStatkowPrzeciwnika].x == x && PozycjeStatkow[IloscStatkowPrzeciwnika].y == y) {
 
                             if (PozycjeStatkow.Count - 1 > IloscStatkowPrzeciwnika)
                                 IloscStatkowPrzeciwnika++;
@@ -387,8 +320,7 @@ namespace ProjektSemStatki
                             CzyKontynuowac = false;
                         }
 
-                        if (CzyKontynuowac)
-                        {
+                        if (CzyKontynuowac) {
                             Console.ForegroundColor = ConsoleColor.Blue;
                             Console.Write("[~]");
                         }
@@ -397,8 +329,7 @@ namespace ProjektSemStatki
                         Statystyki(x, y, MojObiekt);
 
 
-                        if (y == 10)
-                        {
+                        if (y == 10) {
                             //przestrzeń pomiędzy planszami
                             Console.Write("     ");
 
@@ -409,15 +340,12 @@ namespace ProjektSemStatki
                     Console.WriteLine();
                 }
 
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 string error = e.Message.ToString();
             }
         }
 
-        static void MapaPrzeciwnika(int x, char row, Obiekt MojObiekt, Obiekt ObiektPrzeciwnika, ref int IloscMoichStatkow, ref int IloscRuchowPrzeciwnika)
-        {
+        static void MapaPrzeciwnika(int x, char row, Obiekt MojObiekt, Obiekt ObiektPrzeciwnika, ref int IloscMoichStatkow, ref int IloscRuchowPrzeciwnika) {
             List<Pozycja> PozycjePrzeciwnika = new List<Pozycja>();
             row--;
             Random random = new Random();
@@ -427,26 +355,21 @@ namespace ProjektSemStatki
             PozycjeStatkow = PozycjeStatkow.Where(FP => !PozycjeOstrzalu.Exists(PozycjaStatku => PozycjaStatku.x == FP.x && PozycjaStatku.y == FP.y)).ToList();
 
 
-            try
-            {
+            try {
 
-                for (int y = 1; y < 11; y++)
-                {
+                for (int y = 1; y < 11; y++) {
                     bool CzyKontynuowac = true;
-                    if (y == 1)
-                    {
+                    if (y == 1) {
                         Console.ForegroundColor = ConsoleColor.DarkMagenta;
                         Console.Write("[" + row + "]");
                         row++;
                     }
 
-                    if (PozycjeOstrzalu.Count != 0 && PozycjeOstrzalu[IloscRuchowPrzeciwnika].x == x && PozycjeOstrzalu[IloscRuchowPrzeciwnika].y == y)
-                    {
+                    if (PozycjeOstrzalu.Count != 0 && PozycjeOstrzalu[IloscRuchowPrzeciwnika].x == x && PozycjeOstrzalu[IloscRuchowPrzeciwnika].y == y) {
                         if (PozycjeOstrzalu.Count - 1 > IloscRuchowPrzeciwnika)
                             IloscRuchowPrzeciwnika++;
 
-                        if (MojObiekt.WszystkiePozycje.Exists(ShipPos => ShipPos.x == x && ShipPos.y == y))
-                        {
+                        if (MojObiekt.WszystkiePozycje.Exists(ShipPos => ShipPos.x == x && ShipPos.y == y)) {
 
                             Console.ForegroundColor = ConsoleColor.Red;
                             Console.Write($"[*]");
@@ -455,9 +378,7 @@ namespace ProjektSemStatki
                             CzyKontynuowac = false;
                             //continue;
 
-                        }
-                        else
-                        {
+                        } else {
                             Console.ForegroundColor = ConsoleColor.Black;
                             Console.Write("[X]");
 
@@ -469,9 +390,7 @@ namespace ProjektSemStatki
 
                     }
 
-                    if (CzyKontynuowac && PozycjeStatkow.Count != 0 && PozycjeStatkow[IloscMoichStatkow].x == x && PozycjeStatkow[IloscMoichStatkow].y == y)
-
-                    {
+                    if (CzyKontynuowac && PozycjeStatkow.Count != 0 && PozycjeStatkow[IloscMoichStatkow].x == x && PozycjeStatkow[IloscMoichStatkow].y == y) {
 
                         if (PozycjeStatkow.Count - 1 > IloscMoichStatkow)
                             IloscMoichStatkow++;
@@ -485,8 +404,7 @@ namespace ProjektSemStatki
 
                     }
 
-                    if (CzyKontynuowac)
-                    {
+                    if (CzyKontynuowac) {
                         Console.ForegroundColor = ConsoleColor.Blue;
                         Console.Write("[~]");
                     }
@@ -497,65 +415,49 @@ namespace ProjektSemStatki
                 }
 
 
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 string error = e.Message.ToString();
             }
         }
 
-        static Pozycja Analiza(string input, Dictionary<char, int> Koordynaty)
-        {
+        static Pozycja Analiza(string input, Dictionary<char, int> Koordynaty) {
             Pozycja poz = new Pozycja();
 
             char[] podzial = input.ToUpper().ToCharArray();
 
-            if (podzial.Length < 2 || podzial.Length > 4)
-            {
+            if (podzial.Length < 2 || podzial.Length > 4) {
                 return poz;
             }
-            if (Koordynaty.TryGetValue(podzial[0], out int value))
-            {
+            if (Koordynaty.TryGetValue(podzial[0], out int value)) {
                 poz.x = value;
-            }
-            else
-            {
+            } else {
                 return poz;
             }
 
-            if (podzial.Length == 3)
-            {
+            if (podzial.Length == 3) {
 
-                if (podzial[1] == '1' && podzial[2] == '0')
-                {
+                if (podzial[1] == '1' && podzial[2] == '0') {
                     poz.y = 10;
                     return poz;
-                }
-                else
-                {
+                } else {
                     return poz;
                 }
             }
-            if (podzial[1] - '0' > 9)
-            {
+            if (podzial[1] - '0' > 9) {
                 return poz;
-            }
-            else
-            {
+            } else {
                 poz.y = podzial[1] - '0';
             }
             return poz;
         }
 
-        static void Oznaczenia()
-        {
+        static void Oznaczenia() {
             Console.ForegroundColor = ConsoleColor.DarkMagenta;
             Console.Write("[ ]");
             for (int i = 1; i < 11; i++)
                 Console.Write("[" + i + "]");
         }
-        static Dictionary<char, int> PopulateDictionary()
-        {
+        static Dictionary<char, int> PopulateDictionary() {
             Dictionary<char, int> koordynaty =
                      new Dictionary<char, int>
                      {
@@ -574,46 +476,39 @@ namespace ProjektSemStatki
             return koordynaty;
         }
 
-        static void InfoDlaGracza(Obiekt obiekt, bool CzyStatek)
-        {
+        static void InfoDlaGracza(Obiekt obiekt, bool CzyStatek) {
 
             string title = CzyStatek ? "Twoja" : "Przeciwna";
 
-            if (obiekt.SprawdzJedynke && obiekt.CzyJedynkaZatopiona)
-            {
+            if (obiekt.SprawdzJedynke && obiekt.CzyJedynkaZatopiona) {
                 Console.ForegroundColor = ConsoleColor.DarkRed;
                 Console.WriteLine("{0} {1} jest zatopiony", title, nameof(obiekt.Jedynka));
-                
+
             }
-            if (obiekt.SprawdzDwojke && obiekt.CzyDwojkaZatopiona)
-            {
+            if (obiekt.SprawdzDwojke && obiekt.CzyDwojkaZatopiona) {
                 Console.ForegroundColor = ConsoleColor.DarkRed;
                 Console.WriteLine("{0} {1} jest zatopiony", title, nameof(obiekt.Dwojka));
                 obiekt.SprawdzDwojke = false;
             }
-            if (obiekt.SprawdzTrojke && obiekt.CzyTrojkaZatopiona)
-            {
+            if (obiekt.SprawdzTrojke && obiekt.CzyTrojkaZatopiona) {
                 Console.ForegroundColor = ConsoleColor.DarkRed;
                 Console.WriteLine("{0} {1} jest zatopiony", title, nameof(obiekt.Trojka));
                 obiekt.SprawdzTrojke = false;
             }
-            if (obiekt.SprawdzCzworke && obiekt.CzyCzworkaZatopiona)
-            {
+            if (obiekt.SprawdzCzworke && obiekt.CzyCzworkaZatopiona) {
                 Console.ForegroundColor = ConsoleColor.DarkRed;
                 Console.WriteLine("{0} {1} jest zatopiona", title, nameof(obiekt.Czworka));
                 obiekt.SprawdzCzworke = false;
             }
 
-            if (obiekt.SprawdzPiatke && obiekt.CzyPiatkaZatopiona)
-            {
+            if (obiekt.SprawdzPiatke && obiekt.CzyPiatkaZatopiona) {
                 Console.ForegroundColor = ConsoleColor.DarkRed;
                 Console.WriteLine("{0} {1} jest zatopiony", title, nameof(obiekt.Piatka));
                 obiekt.SprawdzPiatke = false;
             }
 
         }
-        static int ProgramGlowny()
-        {
+        static int ProgramGlowny() {
 
             Console.Clear(); // czyści konsolę, żeby nie wyświetlało się niepotrzebnie menu
             //pokazanie statków przeciwnika
@@ -624,8 +519,7 @@ namespace ProjektSemStatki
 
             Dictionary<char, int> Kordy = PopulateDictionary();
             Oznaczenia();
-            for (int h = 0; h < 19; h++)
-            {
+            for (int h = 0; h < 19; h++) {
                 Console.Write(" ");
             }
 
@@ -633,8 +527,7 @@ namespace ProjektSemStatki
 
             int Gra;
             //100 elementów, 100 współrzędnych (A1,A2,A3 itd.)
-            for (Gra = 1; Gra < 101; Gra++)
-            {
+            for (Gra = 1; Gra < 101; Gra++) {
                 MojObiekt.LiczbaKrokow++;
 
                 Pozycja pozycja = new Pozycja();
@@ -646,15 +539,13 @@ namespace ProjektSemStatki
                 pozycja = Analiza(input, Kordy);
                 //v jeśli wprowadzimy nieprawidłowe dane, gra poprosi nas w kółko o ponowne podanie kordów,
                 // analogicznie jeśli dane pole zostało już ustrzelone
-                if (pozycja.x == -1 || pozycja.y == -1)
-                {
+                if (pozycja.x == -1 || pozycja.y == -1) {
                     Console.WriteLine("Nieprawidłowe dane!");
                     Gra--;
                     continue;
                 }
 
-                if (MojObiekt.Strzaly.Any(EFP => EFP.x == pozycja.x && EFP.y == pozycja.y))
-                {
+                if (MojObiekt.Strzaly.Any(EFP => EFP.x == pozycja.x && EFP.y == pozycja.y)) {
                     Console.WriteLine("Już strzelono w te kordynaty!");
                     Gra--;
                     continue;
@@ -673,8 +564,7 @@ namespace ProjektSemStatki
                 ObiektPrzeciwnika.SprawdzStan(MojObiekt.Strzaly);
 
                 Oznaczenia();
-                for (int h = 0; h < 19; h++)
-                {
+                for (int h = 0; h < 19; h++) {
                     Console.Write(" ");
                 }
                 Mapa(MojObiekt.Strzaly, MojObiekt, ObiektPrzeciwnika, PokazStatkiPrzeciwnika);
@@ -682,72 +572,90 @@ namespace ProjektSemStatki
                 InfoDlaGracza(MojObiekt, true);
                 InfoDlaGracza(ObiektPrzeciwnika, false);
                 //v jeśli wszystkie statki są zniszczone, wychodzimy z pętli, koniec gry
-                if (ObiektPrzeciwnika.CzyStatkiSaZniszczone || MojObiekt.CzyStatkiSaZniszczone)
-                {
+                if (ObiektPrzeciwnika.CzyStatkiSaZniszczone || MojObiekt.CzyStatkiSaZniszczone) {
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    KoniecGry(ObiektPrzeciwnika, MojObiekt, Gra);
                     break;
                 }
-                
+
             }
-            // v warunki rozstrzygnięcia gry
-            Console.ForegroundColor = ConsoleColor.White;
             // ! - bool
-            if (ObiektPrzeciwnika.CzyStatkiSaZniszczone && !MojObiekt.CzyStatkiSaZniszczone)
-            {
+            return Gra;
+        }
+
+        public static void KoniecGry(Obiekt ObiektPrzeciwnika, Obiekt MojObiekt, int Gra) {
+            if (ObiektPrzeciwnika.CzyStatkiSaZniszczone && !MojObiekt.CzyStatkiSaZniszczone) {
                 Console.WriteLine("Koniec gry, wygrałeś.");
                 Console.WriteLine("Twój wynik: {0} ", Gra);
-                string[] highScores = new string[10];
-                int currentScore = Gra;
                 Console.WriteLine("Podaj nick: ");
                 string playerName = Console.ReadLine();
-                if (!File.Exists("highscores.txt"))
-                {
-                    File.Create("highscores.txt");
-                }
-                try
-                {
-                    //load the high scores from file
-                    highScores = File.ReadAllLines("highscores.txt");
-                }
-                catch (IOException ex)
-                {
-                    Console.WriteLine("Błąd odczytu: " + ex.Message);
-                }
-                highScores[highScores.Length - 1] = playerName + ": " + currentScore;
-                try
-                {
-                    highScores = highScores.OrderByDescending(x => int.Parse(x.Split(':')[1])).ToArray();
-                }
-                catch (IndexOutOfRangeException ex)
-                {
-                    Console.WriteLine("Error parsing high scores: " + ex.Message);
-                }
 
-                File.WriteAllLines("highscores.txt", highScores);
-                foreach (string score in highScores)
-                {
-                    Console.WriteLine(score);
-                }
-            }
-            else if (!ObiektPrzeciwnika.CzyStatkiSaZniszczone && MojObiekt.CzyStatkiSaZniszczone)
-            {
+                AktualizujPlikHighscores(Gra, playerName); // Zapisz dane skończonej gry do pliku
+
+            } else if (!ObiektPrzeciwnika.CzyStatkiSaZniszczone && MojObiekt.CzyStatkiSaZniszczone) {
                 Console.WriteLine("Koniec gry, przegrałeś.");
 
-            }
-            else
-            {
+            } else {
                 Console.WriteLine("Koniec gry, remis.");
             }
-            return Gra;
-            
+
+            Console.WriteLine("Czy chcesz zagrać jeszcze raz? Y/N");
+            Console.ReadKey();
+            // Tutaj dodaj logikę resetująca gre / wyjście z programu
+            return;
         }
-        class Score
-        {
+
+        public static void AktualizujPlikHighscores(int currentScore, string playerName) {
+
+            // highscores.txt
+            SprawdzPlikHighscore();
+
+            // Stwórz pustą tablice highscore'ów
+            string[] existingHighScoresArray = File.ReadAllLines("highscores.txt"); // Wczytaj obecną zawartosc pliku highscores.txt do tablicy
+            List<string> highScoresList = new List<string>(existingHighScoresArray); // Konwersja tablicy na listę
+            string currentGameData = playerName + ": " + currentScore.ToString(); // Dane obecnej gry
+
+            highScoresList.Add(currentGameData); // Dodaje dane obecnej gry na koniec listy
+
+            File.WriteAllLines("highscores.txt", highScoresList); // Nadpisz plik
+        }
+
+        public static void SprawdzPlikHighscore() {
+
+            // Sprawdz czy plik highscores.txt istnieje i stwórz go, jeśli nie
+            if (!File.Exists("highscores.txt")) {
+                File.Create("highscores.txt");
+            }
+        }
+
+        public static void WyswietlPosortowaneHighscores() {
+
+            string[] highScores = File.ReadAllLines("highscores.txt");
+
+            highScores = highScores.OrderByDescending(x => int.Parse(x.Split(':')[1])).ToArray();
+
+            foreach (var item in highScores) {
+                Console.WriteLine(item);
+            }
+        }
+        class Score {
             public string Name { get; set; }
             public int Value = ProgramGlowny();
         }
-        static void Main(string[] args)
-        {
+        static void Main(string[] args) {
             Menu();
+
+            // Testowanie high score'ow
+            /*
+            Obiekt MojeStatki = new Obiekt();
+            Obiekt JegoStatki = new Obiekt();
+            JegoStatki.CzyStatkiSaZniszczone = true;
+            KoniecGry(JegoStatki, MojeStatki, 32);
+            */
+
+            // WyswietlPosortowaneHighscores();
         }
     }
 }
