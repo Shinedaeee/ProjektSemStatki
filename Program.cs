@@ -633,13 +633,29 @@ namespace ProjektSemStatki {
             SprawdzPlikHighscore();
 
             // Stwórz pustą tablice highscore'ów
-            string[] existingHighScoresArray = File.ReadAllLines("highscores.txt"); // Wczytaj obecną zawartosc pliku highscores.txt do tablicy
-            List<string> highScoresList = new List<string>(existingHighScoresArray); // Konwersja tablicy na listę
+            // string[] existingHighScoresArray = File.ReadAllLines("highscores.txt"); // Wczytaj obecną zawartosc pliku highscores.txt do tablicy
+            // List<string> highScoresList = new List<string>(existingHighScoresArray); // Konwersja tablicy na listę
+
+            /* Nowe rozwiazanie -- File.ReadAllLines nie "zamykało" procesu pliku, więc czasem pojawiał sie błąd, że
+            proces jest już używany przez inny proces */
+            var highScoresList = new List<string>();
+            using (StreamReader reader = new StreamReader("highscores.txt")) {
+                var line = reader.ReadLine();
+                while (line != null) {
+                    highScoresList.Add(line);
+                    line = reader.ReadLine();
+                }
+            }
+
             string currentGameData = playerName + ": " + currentScore.ToString(); // Dane obecnej gry
 
             highScoresList.Add(currentGameData); // Dodaje dane obecnej gry na koniec listy
 
-            File.WriteAllLines("highscores.txt", highScoresList); // Nadpisz plik
+            // Nadpisz plik highscores.txt
+            using StreamWriter writer = new StreamWriter("highscores.txt");
+            foreach (var highScore in highScoresList) {
+                writer.WriteLine(highScore);
+            }
         }
 
         public static void SprawdzPlikHighscore() {
@@ -679,13 +695,13 @@ namespace ProjektSemStatki {
         static void Main(string[] args) {
 
             Menu();
+            
             // Testowanie high score'ow
-            /*
-            Obiekt MojeStatki = new Obiekt();
+            /* Obiekt MojeStatki = new Obiekt();
             Obiekt JegoStatki = new Obiekt();
             JegoStatki.CzyStatkiSaZniszczone = true;
-            KoniecGry(JegoStatki, MojeStatki, 32);
-            */
+            KoniecGry(JegoStatki, MojeStatki, 32); */
+            
             // WyswietlPosortowaneHighscores();
         }
     }
