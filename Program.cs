@@ -592,7 +592,8 @@ namespace ProjektSemStatki {
                 Console.WriteLine("Podaj nick: ");
                 string playerName = Console.ReadLine();
 
-                AktualizujPlikHighscores(Gra, playerName); // Zapisz dane skończonej gry do pliku
+                AktualizujPlikHighscores(Gra, playerName); // Zapisz dane skończonej gry do pliku,
+                // AktualizujPlikHighscores() od razu sprawdza, czy plik w ogóle istnieje
 
             } else if (!ObiektPrzeciwnika.CzyStatkiSaZniszczone && MojObiekt.CzyStatkiSaZniszczone) {
                 Console.WriteLine("Koniec gry, przegrałeś.");
@@ -600,11 +601,30 @@ namespace ProjektSemStatki {
             } else {
                 Console.WriteLine("Koniec gry, remis.");
             }
+            
+            WyswietlPosortowaneHighscores(); // Pokaz highscores od razu po podaniu nicku po skonczonej grze
 
-            Console.WriteLine("Czy chcesz zagrać jeszcze raz? Y/N");
-            Console.ReadKey();
-            // Tutaj dodaj logikę resetująca gre / wyjście z programu
-            return;
+            // Spytaj czy gracz chce zagrać ponownie / wyjść
+            Console.Clear();
+            Console.WriteLine("Czy chcesz zagrać jeszcze raz?");
+            Console.WriteLine();
+            Console.WriteLine("1) Tak");
+            Console.WriteLine("2) Nie (wyjście)");
+            Console.WriteLine();
+
+            CzyZagracPonownie();
+        }
+
+        public static void CzyZagracPonownie() {
+            int wybor = Tools.WprowadzInt($"Wybierz opcję: ", -1, 4);
+            bool CzyGrac = true;
+            while (CzyGrac) {
+                switch (wybor) {
+                    case 1: { ProgramGlowny(); break; }
+                    case 2: { Environment.Exit(0); break; }
+                    default: { CzyZagracPonownie(); return; }
+                }
+            }
         }
 
         public static void AktualizujPlikHighscores(int currentScore, string playerName) {
@@ -635,18 +655,30 @@ namespace ProjektSemStatki {
             string[] highScores = File.ReadAllLines("highscores.txt");
 
             highScores = highScores.OrderByDescending(x => int.Parse(x.Split(':')[1])).Reverse().ToArray();
+            var highScoresTop5 = highScores.Take(5); // Bierze 5 elementów z początku posortowanej tablicy
 
-            foreach (var item in highScores) {
-                Console.WriteLine(item);
+            Console.Clear();
+            Console.WriteLine("Highscores");
+            Console.WriteLine();
+
+            // Wyswietlanie topki highscores
+            int highScoreIndex = 1;
+            foreach (var item in highScoresTop5) {
+                Console.WriteLine(highScoreIndex + ")" + item);
+                highScoreIndex++;
             }
+
+            Console.WriteLine();
+            Console.WriteLine("Kliknij cokolwiek aby kontynuować");
+            Console.ReadKey();
         }
         class Score {
             public string Name { get; set; }
             public int Value = ProgramGlowny();
         }
         static void Main(string[] args) {
-            Menu();
 
+            Menu();
             // Testowanie high score'ow
             /*
             Obiekt MojeStatki = new Obiekt();
@@ -654,7 +686,6 @@ namespace ProjektSemStatki {
             JegoStatki.CzyStatkiSaZniszczone = true;
             KoniecGry(JegoStatki, MojeStatki, 32);
             */
-
             // WyswietlPosortowaneHighscores();
         }
     }
